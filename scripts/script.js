@@ -1,7 +1,7 @@
 import { player, playerMove } from './player.js';
 import { Wall, Pallet, npc, UI } from './classes.js';
 import { move, limit } from './movement.js';
-import {setupWalls} from './map.js';
+import {setupWalls, setupPallets} from './map.js';
 
 let canvas = document.getElementById("canvas");
 const ctx = canvas.getContext('2d');
@@ -12,10 +12,7 @@ let walls = [];
 setupWalls(walls);
 
 let pallets = [];
-pallets.push(new Pallet(365, 130));
-pallets.push(new Pallet(365, 180));
-pallets.push(new Pallet(365, 220));
-pallets.push(new Pallet(365, 250));
+setupPallets(pallets, walls);
 
 limit(player, walls);
 let npcs = [
@@ -34,7 +31,7 @@ function hitCheck() {
   for (let pal in pallets) {
     let dist = Math.abs(Math.pow(player.x - pallets[pal].x, 2) + Math.pow(player.y - pallets[pal].y, 2));
     if (dist < Math.pow(player.radius + pallets[pal].radius, 2)) {
-      UI.score += 100;
+      UI.score += 10;
       pallets.splice(pal, 1);
     }
   }
