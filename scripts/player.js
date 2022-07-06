@@ -3,8 +3,8 @@ let triRising = true;
 let canvas = document.getElementById("canvas");
 const ctx = canvas.getContext('2d');
 export let player = {
-    x: 250,
-    y: 180,
+    x: 330,
+    y: 520,
     radius: 20,
     speed: 7,
     dir: "",

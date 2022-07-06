@@ -1,6 +1,7 @@
 import { player, playerMove } from './player.js';
 import { Wall, Pallet, npc, UI } from './classes.js';
 import { move, limit } from './movement.js';
+import {setupWalls} from './map.js';
 
 let canvas = document.getElementById("canvas");
 const ctx = canvas.getContext('2d');
@@ -8,10 +9,8 @@ ctx.canvas.width = window.innerWidth;
 ctx.canvas.height = window.innerHeight;
 
 let walls = [];
-walls.push(new Wall(200, 200, 150, 30));
-walls.push(new Wall(200, 130, 150, 30));
-walls.push(new Wall(260, 230, 30, 100));
-walls.push(new Wall(390, 130, 30, 150));
+setupWalls(walls);
+
 let pallets = [];
 pallets.push(new Pallet(365, 130));
 pallets.push(new Pallet(365, 180));
@@ -48,7 +47,7 @@ function moveEverything() {
   move(player, walls);
   hitCheck();
 }
-document.addEventListener("click", spawnNPC);
+//document.addEventListener("click", spawnNPC);
 
 function spawnNPC(e) {
   let newNpc = new npc(e.clientX - 10, e.clientY - 10, 20, 7);
