@@ -15,9 +15,12 @@ let pallets = [];
 setupPallets(pallets, walls);
 
 limit(player, walls);
-let npcs = [
-  new npc(100, 100, 20, 7)
-];
+let npcs = [];
+let blinky = new npc(50 + 20 + 10, 80, 20, 10, "Blinky");
+npcs.push(blinky);
+npcs.push(new npc(50 + 120 + 10, 80, 20, 10, "Pinky"));
+npcs.push(new npc(50 + 120 + 10, 160, 20, 10, "Clyde"));
+npcs.push(new npc(50 + 20 + 10, 160, 20, 10, "Inky"));
 
 function hitCheck() {
   for (let n of npcs) {
@@ -71,16 +74,11 @@ function draw() {
 }
 draw();
 
-var intervalId = window.setInterval(function () {
-  moveEverything();
-  draw();
-}, 33);
-
 window.setInterval(function () {
   for (let n of npcs) {
-    let rand = Math.floor(Math.random() * 3);
-    if (rand != 0) {
-      n.changeDir();
-    }
+    n.retarget(player, blinky);
+    n.changeDir(walls);
   }
-}, 500);
+  moveEverything();
+  draw();
+}, 50);
