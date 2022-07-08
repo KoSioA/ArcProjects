@@ -6,7 +6,7 @@ export let player = {
     x: 330,
     y: 520,
     radius: 20,
-    speed: 10,
+    speed: 5,
     dir: "",
     draw() {
 

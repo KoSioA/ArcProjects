@@ -1,4 +1,4 @@
-export function move(character, walls) {
+export function move(character, walls, teleporters) {
     switch (character.dir) {
         case "L":
             character.x -= character.speed;
@@ -13,10 +13,10 @@ export function move(character, walls) {
             character.y += character.speed;
             break;
     }
-    limit(character, walls);
+    limit(character, walls, teleporters);
 }
 
-export function limit(character, walls) {
+export function limit(character, walls, teleporters) {
     let canvas = document.getElementById("canvas");
     const ctx = canvas.getContext('2d');
     let top = character.y - character.radius;
@@ -37,4 +37,15 @@ export function limit(character, walls) {
         if (top < wallBot && bot > wallBot && left < wallRight && right > wallLeft) character.y = wall.y + wall.height + character.radius;
         if (bot > wallTop && top < wallTop && left < wallRight && right > wallLeft) character.y = wall.y - character.radius;
     }
+    for (let wall of teleporters) {
+        let wallLeft = wall.x;
+        let wallRight = wall.x + wall.width;
+        let wallTop = wall.y;
+        let wallBot = wall.y + wall.height;
+        if (left < wallRight && right > wallRight && top < wallBot && bot > wallTop && character.dir == wall.dir) wall.teleport(character);
+        if (right > wallLeft && left < wallLeft && top < wallBot && bot > wallTop && character.dir == wall.dir) wall.teleport(character);
+        if (top < wallBot && bot > wallBot && left < wallRight && right > wallLeft&& character.dir == wall.dir) wall.teleport(character);
+        if (bot > wallTop && top < wallTop && left < wallRight && right > wallLeft&& character.dir == wall.dir) wall.teleport(character);
+    }
+    
 }

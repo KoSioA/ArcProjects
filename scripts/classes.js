@@ -133,6 +133,29 @@ export let UI = {
         ctx.fillText(score, 10, 25);
     }
 }
+export class Teleporter {
+    constructor(x, y, width, height, dir, targetx, targety){
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.dir = dir;
+        this.targetx =targetx;
+        this.targety = targety;
+    }
+    teleport(character){
+        character.x = this.targetx;
+        character.y = this.targety;
+    }
+    draw(){
+        ctx.fillStyle = "rgb(230,230,250)";
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.fillStyle = "rgb(0,255,0)";
+        ctx.beginPath();
+        ctx.arc(this.targetx, this.targety, 5, 0, 2 * Math.PI);
+        ctx.fill();
+    }
+}
 
 function dotNotInWalls(dot, walls) {
     for (let wall of walls) {

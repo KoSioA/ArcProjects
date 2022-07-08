@@ -1,4 +1,4 @@
-import { Wall, Pallet } from "./classes.js";
+import { Wall, Pallet, Teleporter } from "./classes.js";
 let startX = 50;
 let startY = 50;
 let tileSize = 20;
@@ -186,6 +186,10 @@ export function setupPallets(pallets, walls) {
         pallets.push(new Pallet(x + 5 * tileSize, startY + 8 * tileSize + tileSize/2));
     }
     console.log(pallets.length);
+}
+export function setupTeleporters(teleporters){
+    teleporters.push(new Teleporter(startX, startY + 13 * tileSize + tileSize/2, tileSize/2, 2 * tileSize, "L", startX + 27 * tileSize + tileSize / 2, startY + 14 * tileSize + tileSize/2));
+    teleporters.push(new Teleporter(startX + 27 * tileSize + tileSize / 2, startY + 13 * tileSize + tileSize/2, tileSize/2, 2 * tileSize, "R", startX + tileSize/2, startY + 14 * tileSize + tileSize/2));
 }
 /*
 function notTouchingWall(pallet, walls){
