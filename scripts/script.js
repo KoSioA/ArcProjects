@@ -1,7 +1,7 @@
 import { player, playerMove } from './player.js';
 import { Wall, Pallet, npc, UI, Teleporter } from './classes.js';
 import { move, limit } from './movement.js';
-import {setupWalls, setupPallets, setupTeleporters} from './map.js';
+import { setupWalls, setupPallets, setupTeleporters, setupPowers } from './map.js';
 
 let canvas = document.getElementById("canvas");
 const ctx = canvas.getContext('2d');
@@ -9,6 +9,7 @@ ctx.canvas.width = window.innerWidth;
 ctx.canvas.height = window.innerHeight;
 
 let ghostSpeed = 4;
+let ghostsEaten = 0;
 
 let walls = [];
 setupWalls(walls);
@@ -19,6 +20,8 @@ setupPallets(pallets, walls);
 let teleporters = [];
 setupTeleporters(teleporters);
 
+let powers = [];
+setupPowers(powers);
 
 limit(player, walls, teleporters);
 let npcs = [];
@@ -32,8 +35,16 @@ function hitCheck() {
   for (let n of npcs) {
     let dist = Math.abs(Math.pow(player.x - n.x, 2) + Math.pow(player.y - n.y, 2));
     if (dist < Math.pow(player.radius + n.radius, 2)) {
-      UI.score -= 10;
-      if (UI.score < 0) UI.score = 0;
+      if (n.Frightened == 0 && n.Dead == 0) {
+        UI.score -= 10;
+        if (UI.score < 0) UI.score = 0;
+      } else {
+        if(n.Dead == 0){
+          //this.score
+        }
+        n.Frightened = 0;
+        n.Dead = 1;
+      }
     }
   }
 
@@ -42,6 +53,14 @@ function hitCheck() {
     if (dist < Math.pow(player.radius + pallets[pal].radius, 2)) {
       UI.score += 10;
       pallets.splice(pal, 1);
+    }
+  }
+  for (let pal in powers) {
+    let dist = Math.abs(Math.pow(player.x - powers[pal].x, 2) + Math.pow(player.y - powers[pal].y, 2));
+    if (dist < Math.pow(player.radius + powers[pal].radius, 2)) {
+      UI.score += 40;
+      player.status = "power";
+      powers.splice(pal, 1);
     }
   }
 }
@@ -53,33 +72,29 @@ function moveEverything() {
   move(player, walls, teleporters);
   hitCheck();
 }
-//document.addEventListener("click", spawnNPC);
 
-function spawnNPC(e) {
-  let newNpc = new npc(e.clientX - 10, e.clientY - 10, 20, 7);
-  limit(newNpc, walls, teleporters);
-  npcs.push(newNpc);
-}
 document.addEventListener("keydown", playerMove);
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  player.draw();
-  for (let n of npcs) {
-    n.draw();
-  }
   for (let wall of walls) {
     wall.draw();
   }
   for (let pallet of pallets) {
     pallet.draw();
   }
-  for(let teleporter of teleporters){
+  for (let teleporter of teleporters) {
     teleporter.draw();
   }
-  ctx.fillStyle = 'rgb(255, 255, 255)';
-  ctx.font = "30px Arial";
-  ctx.fillText(UI.score, 10, 25);
+  
+  player.draw();
+  for (let n of npcs) {
+    n.draw();
+  }
+  for (let power of powers) {
+    power.draw();
+  }
+  UI.draw();
 }
 draw();
 
@@ -90,6 +105,9 @@ window.setInterval(function () {
 
 window.setInterval(function () {
   for (let n of npcs) {
+    n.modeChange();
+    if (player.status == "power" && n.Frightened == 0 && n.Dead == 0) n.Frightened = 1;
+    else if (player.status != "power" && n.Frightened == 1) n.Frightened = 0;
     n.retarget(player, blinky);
     n.changeDir(walls);
   }

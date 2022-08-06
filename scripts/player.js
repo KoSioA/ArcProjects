@@ -8,6 +8,7 @@ export let player = {
     radius: 20,
     speed: 5,
     dir: "",
+    status: "normal",
     draw() {
 
         ctx.fillStyle = 'rgb(255, 255, 0)';
